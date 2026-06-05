@@ -6,54 +6,21 @@
     <title>Quiz Online</title>
     <meta
       name="description"
-      content="Quiz online simples, editável e pronto para GitHub Pages."
+      content="Quiz online simples, editavel e pronto para GitHub Pages."
     />
     <link rel="stylesheet" href="./style.css" />
     <script src="./questions.js"></script>
     <script defer src="./app.js"></script>
   </head>
   <body>
-    <main class="app-shell">
-      <section class="hero" aria-labelledby="title">
-        <div class="hero-copy">
-          <p class="eyebrow">Quiz online</p>
-          <h1 id="title">Jogue, responda e avance</h1>
-          <p class="lead">
-            Um quiz simples para publicar no GitHub Pages e editar com facilidade
-            ao longo do tempo.
-          </p>
+    <main class="quiz-app">
+      <section class="phone-stage" aria-live="polite">
+        <img id="screenImage" class="screen-image" alt="" />
+        <div id="hotspots" class="hotspots"></div>
+        <div id="fallbackPanel" class="fallback-panel" hidden>
+          <h1 id="fallbackTitle">Quiz Online</h1>
+          <p id="fallbackText"></p>
         </div>
-        <div class="hero-art" aria-hidden="true">
-          <img id="heroImage" alt="" />
-        </div>
-      </section>
-
-      <section class="quiz-panel" aria-live="polite">
-        <div class="quiz-topbar">
-          <div>
-            <p class="small-label">Progresso</p>
-            <strong id="progress">0/0</strong>
-          </div>
-          <div>
-            <p class="small-label">Acertos</p>
-            <strong id="score">0</strong>
-          </div>
-        </div>
-
-        <div class="question-block">
-          <p id="category" class="category"></p>
-          <h2 id="question">Carregando...</h2>
-          <p id="hint" class="hint"></p>
-        </div>
-
-        <div id="answers" class="answers"></div>
-
-        <div class="actions">
-          <button id="restartBtn" class="secondary" type="button">Reiniciar</button>
-          <button id="nextBtn" class="primary" type="button" disabled>Próxima</button>
-        </div>
-
-        <p id="result" class="result" hidden></p>
       </section>
     </main>
   </body>

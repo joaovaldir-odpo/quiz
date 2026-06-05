@@ -1,39 +1,39 @@
 window.QUIZ_DATA = {
-  title: "Quiz online",
-  image: "assets/scene-1.jpg",
+  title: "Album Interativo ECA Digital",
+  screens: {
+    home: "doc/pagina inicial.PNG",
+    intro: "doc/pagina2.PNG",
+  },
+  answerAreas: [
+    { x: 5, y: 73, width: 25, height: 11 },
+    { x: 37, y: 73, width: 28, height: 11 },
+    { x: 72, y: 73, width: 24, height: 11 },
+  ],
   questions: [
     {
-      question: "Qual linguagem roda no navegador para dar interatividade ao quiz?",
-      category: "Fundamentos",
-      hint: "A lógica da interface fica no arquivo app.js.",
+      question: "Quando um aplicativo ou jogo precisa proteger criancas?",
+      screens: {
+        theme: "doc/tema1.PNG",
+        question: "doc/pergunta1.PNG",
+        correct: "doc/resposta-certa1.PNG",
+        wrong: "doc/resposta-errada1.PNG",
+      },
       answers: [
-        { text: "JavaScript", correct: true },
-        { text: "SQL", correct: false },
-        { text: "CSS", correct: false },
-        { text: "JSON", correct: false },
-        { text: "HTML", correct: false },
-      ],
-    },
-    {
-      question: "Qual arquivo é melhor para editar as perguntas com facilidade?",
-      category: "Conteúdo",
-      hint: "Mantê-lo separado facilita atualizar o quiz com o tempo.",
-      answers: [
-        { text: "questions.js", correct: true },
-        { text: "style.css", correct: false },
-        { text: "index.html", correct: false },
-        { text: "README.md", correct: false },
-      ],
-    },
-    {
-      question: "Qual serviço publica páginas estáticas direto do repositório?",
-      category: "Hospedagem",
-      hint: "Você escolheu esse caminho para o projeto.",
-      answers: [
-        { text: "GitHub Pages", correct: true },
-        { text: "Banco de dados SQL", correct: false },
-        { text: "FTP obrigatório", correct: false },
-        { text: "Servidor dedicado", correct: false },
+        {
+          letter: "A",
+          text: "Quando o app so funciona a noite.",
+          correct: false,
+        },
+        {
+          letter: "B",
+          text: "So quando o celular esta sem internet.",
+          correct: false,
+        },
+        {
+          letter: "C",
+          text: "Quando e feito para criancas ou pode ser usado por elas.",
+          correct: true,
+        },
       ],
     },
   ],
