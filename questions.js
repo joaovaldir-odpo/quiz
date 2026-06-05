@@ -1,7 +1,7 @@
 window.QUIZ_DATA = {
   title: "Album Interativo ECA Digital",
   screens: {
-    home: "doc/pagina inicial.PNG",
+    home: "assets/album-1/home.png",
     intro: "doc/pagina2.PNG",
   },
   answerAreas: [

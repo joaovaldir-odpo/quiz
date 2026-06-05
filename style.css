@@ -49,6 +49,10 @@ body {
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.42);
 }
 
+.phone-stage[data-screen="home"] {
+  background: #0a162f;
+}
+
 .screen-image {
   position: absolute;
   inset: 0;
@@ -58,6 +62,12 @@ body {
   display: block;
   user-select: none;
   -webkit-user-drag: none;
+}
+
+.phone-stage[data-screen="home"] .screen-image {
+  height: 90%;
+  object-fit: contain;
+  object-position: top center;
 }
 
 .hotspots {
@@ -76,22 +86,6 @@ body {
 body.debug-hotspots .hotspot {
   border: 2px solid #ff1e1e;
   background: rgba(255, 0, 0, 0.08);
-}
-
-body.debug-hotspots .hotspot::after {
-  content: attr(aria-label);
-  position: absolute;
-  left: 0;
-  bottom: 100%;
-  max-width: 180px;
-  padding: 2px 5px;
-  color: #fff;
-  background: #ff1e1e;
-  font-size: 10px;
-  font-weight: 700;
-  line-height: 1.2;
-  text-align: left;
-  pointer-events: none;
 }
 
 .hotspot:focus-visible {
@@ -114,6 +108,43 @@ body.debug-hotspots .hotspot::after {
   font-weight: 800;
   text-transform: uppercase;
   box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.35);
+}
+
+.next-page-hotspot.visible .hotspot-label {
+  top: 21%;
+  right: 48px;
+  bottom: 21%;
+  left: 0;
+  font-size: 11px;
+  white-space: nowrap;
+  border: 2px solid rgba(0, 0, 0, 0.55);
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.35);
+}
+
+.next-page-hotspot::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 47px;
+  height: 47px;
+  transform: translateY(-50%);
+  border: 4px solid #eaf8ff;
+  border-radius: 999px;
+  background: #0e5c85;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.35);
+}
+
+.next-page-hotspot::after {
+  content: "";
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  width: 15px;
+  height: 18px;
+  transform: translate(0%, -50%);
+  background: #fff;
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
 }
 
 .answer-hotspot {

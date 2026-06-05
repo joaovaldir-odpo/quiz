@@ -6,6 +6,7 @@ const state = {
 };
 
 const els = {
+  stage: document.getElementById("stage"),
   screenImage: document.getElementById("screenImage"),
   hotspots: document.getElementById("hotspots"),
   fallbackPanel: document.getElementById("fallbackPanel"),
@@ -53,6 +54,7 @@ function setScreen(screen) {
   const src = imageFor(screen);
   els.hotspots.innerHTML = "";
   els.fallbackPanel.hidden = true;
+  els.stage.dataset.screen = screen;
 
   if (src) {
     els.screenImage.hidden = false;
@@ -84,11 +86,13 @@ function createHotspot({ label, x, y, width, height, action, visible, className 
 function renderHotspots() {
   if (state.screen === "home") {
     createHotspot({
-      label: "Proxima pagina",
+      label: "Próxima página",
       x: 38,
-      y: 88,
+      y: 90.1,
       width: 58,
-      height: 11,
+      height: 7.6,
+      visible: true,
+      className: "next-page-hotspot",
       action: () => setScreen("intro"),
     });
     return;
