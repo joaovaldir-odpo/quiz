@@ -1,14 +1,14 @@
 # Quiz Online
 
-Projeto simples de quiz estático para publicar no GitHub Pages.
+Projeto simples de quiz estatico para publicar no GitHub Pages.
 
 ## Estrutura
 
-- `index.html`: página principal
+- `index.html`: pagina principal
 - `style.css`: estilos
-- `app.js`: lógica do quiz
-- `questions.js`: perguntas e respostas usadas pela página
-- `assets/`: imagens do cenário
+- `app.js`: logica do quiz
+- `questions.js`: perguntas e respostas usadas pela pagina
+- `assets/`: imagens do cenario
 
 ## Como editar
 
@@ -27,8 +27,8 @@ Cada pergunta aceita:
 
 ## Publicar no GitHub Pages
 
-1. Envie os arquivos para o repositório.
-2. Vá em `Settings > Pages`.
+1. Envie os arquivos para o repositorio.
+2. Va em `Settings > Pages`.
 3. Em `Build and deployment`, selecione a branch `main`.
 4. Escolha a pasta raiz `/ (root)`.
-5. Salve e aguarde a publicação.
+5. Salve e aguarde a publicacao.
