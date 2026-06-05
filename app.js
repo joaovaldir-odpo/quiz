@@ -84,6 +84,9 @@ function setScreen(screen) {
   } else if (screen === "wrong") {
     els.screenImage.hidden = true;
     renderWrongScreen();
+  } else if (screen === "correct") {
+    els.screenImage.hidden = true;
+    renderCorrectScreen();
   } else if (src) {
     els.screenImage.hidden = false;
     els.screenImage.src = encodeURI(src);
@@ -176,6 +179,24 @@ function renderWrongScreen() {
       </div>
       <div class="back-button-visual">Volte</div>
       <div class="back-arrow" aria-hidden="true"></div>
+    </article>
+  `;
+}
+
+function renderCorrectScreen() {
+  const current = state.data.questions[state.questionIndex];
+  const correctScreen = current.correctScreen || {};
+  els.contentLayer.hidden = false;
+  els.contentLayer.innerHTML = `
+    <article class="correct-page">
+      <img class="correct-bg" src="${escapeAttribute(correctScreen.background || "")}" alt="" />
+      <div class="correct-logos">
+        <div class="screen-logo screen-logo-left">LOGO<br />ESCOLA</div>
+        <div class="screen-logo screen-logo-right">LOGO<br />Consultoria</div>
+      </div>
+      <img class="sticker-header" src="${escapeAttribute(correctScreen.header || "")}" alt="" />
+      <div class="sticker-title">${formatText(correctScreen.title || "")}</div>
+      <img class="sticker-card" src="${escapeAttribute(correctScreen.sticker || "")}" alt="" />
     </article>
   `;
 }
@@ -288,10 +309,12 @@ function renderHotspots() {
   if (state.screen === "correct") {
     createHotspot({
       label: "Próxima página",
-      x: 39,
-      y: 80,
-      width: 42,
-      height: 5.5,
+      x: 38,
+      y: 79.8,
+      width: 58,
+      height: 7.6,
+      visible: true,
+      className: "next-page-hotspot",
       action: nextQuestion,
     });
   }

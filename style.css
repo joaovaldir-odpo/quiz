@@ -483,6 +483,74 @@ body {
   transform: rotate(20deg);
 }
 
+.correct-page {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  color: #fff;
+  background: #05093b;
+}
+
+.correct-bg,
+.sticker-header,
+.sticker-card {
+  position: absolute;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.correct-bg {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.correct-logos {
+  position: absolute;
+  top: 13px;
+  left: 10px;
+  right: 10px;
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.sticker-header {
+  top: 7px;
+  left: 86px;
+  width: 188px;
+  z-index: 2;
+}
+
+.sticker-title {
+  position: absolute;
+  top: 121px;
+  left: 88px;
+  width: 184px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  min-height: 27px;
+  color: #fff;
+  background: linear-gradient(180deg, #184f5b 0%, #0c2e3b 100%);
+  border: 2px solid rgba(123, 225, 255, 0.45);
+  border-radius: 4px;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(58, 216, 255, 0.3);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.sticker-card {
+  top: 153px;
+  left: 78px;
+  width: 206px;
+  z-index: 2;
+}
+
 .hotspots {
   position: absolute;
   inset: 0;
