@@ -22,10 +22,11 @@ Abra `questions.js` e altere:
 Cada pergunta aceita:
 
 - `question`
-- `screens`
-- `answerAreas`
-- `category`
-- `hint`
+- `theme`
+- `questionScreen`
+- `wrongScreen`
+- `correctScreen`
+- `stickerFullScreen`
 - `answers`
 
 ## Como customizar as telas
@@ -40,26 +41,51 @@ Telas globais:
 Telas de cada pergunta:
 
 - `theme`: tela antes daquela pergunta
-- `question`: tela daquela pergunta
-- `correct`: recompensa daquela pergunta
-- `wrong`: resposta errada daquela pergunta
+- `questionScreen`: tela daquela pergunta
+- `wrongScreen`: resposta errada daquela pergunta
+- `correctScreen`: recompensa daquela pergunta
+- `stickerFullScreen`: figurinha em tela cheia
 
 Exemplo:
 
 ```js
 {
   question: "Texto da pergunta",
-  screens: {
-    theme: "doc/tema1.PNG",
-    question: "doc/pergunta1.PNG",
-    correct: "doc/resposta-certa1.PNG",
-    wrong: "doc/resposta-errada1.PNG",
+  theme: {
+    background: "assets/album-1/pergunta-2/fundo.png",
+    character: "assets/album-1/pergunta-2/personagem.png",
+    characterStyle: { top: 70, right: 0, width: 128 },
+    speech: "Texto do balao",
   },
-  answers: []
+  questionScreen: {
+    background: "assets/album-1/pergunta-2/fundo.png",
+    character: "assets/album-1/pergunta-2/personagem.png",
+    answerCards: [
+      { top: 423, left: 20, width: 90 },
+      { top: 423, left: 135, width: 90 },
+    ],
+    answerAreas: [
+      { x: 6, y: 75, width: 26, height: 10 },
+      { x: 38, y: 75, width: 26, height: 10 },
+    ],
+  },
+  answers: [
+    { letter: "A", text: "Resposta A", correct: false },
+    { letter: "B", text: "Resposta B", correct: true },
+  ]
 }
 ```
 
-As areas clicaveis usam porcentagem da tela:
+Posicoes visuais usam CSS em objetos `*Style`, com valores em pixels:
+
+- `top`
+- `left`
+- `right`
+- `width`
+- `height`
+- `fontSize`
+
+Areas clicaveis usam porcentagem da tela:
 
 - `x`: distancia da esquerda
 - `y`: distancia do topo
@@ -67,6 +93,24 @@ As areas clicaveis usam porcentagem da tela:
 - `height`: altura
 
 Isso permite ajustar os botoes sem depender do tamanho do celular ou monitor.
+
+## Trofeus
+
+Trofeus podem ser cadastrados em `questions.js`:
+
+```js
+trophies: [
+  {
+    afterQuestion: 3,
+    background: "assets/album-1/trofeu/fundo.png",
+    image: "assets/album-1/trofeu/trofeu.png",
+    title: "Trofeu desbloqueado",
+    text: "Voce concluiu 3 perguntas."
+  }
+]
+```
+
+Quando a pergunta indicada terminar, a tela de trofeu entra automaticamente depois da figurinha em tela cheia.
 
 ## Modo debug das areas clicaveis
 

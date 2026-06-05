@@ -326,24 +326,6 @@ body {
   line-height: 1.08;
 }
 
-.answer-card-a {
-  top: 423px;
-  left: 20px;
-  width: 90px;
-}
-
-.answer-card-b {
-  top: 423px;
-  left: 135px;
-  width: 90px;
-}
-
-.answer-card-c {
-  top: 423px;
-  left: 250px;
-  width:90px;
-}
-
 .wrong-page {
   position: relative;
   height: 100%;
@@ -578,6 +560,57 @@ body {
   width: 398px;
   max-height: 580px;
   object-fit: contain;
+}
+
+.trophy-page {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  color: #fff;
+  background: #0a162f;
+}
+
+.trophy-bg,
+.trophy-image {
+  position: absolute;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.trophy-bg {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.trophy-image {
+  top: 105px;
+  left: 72px;
+  width: 216px;
+  z-index: 2;
+}
+
+.trophy-title,
+.trophy-text {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  z-index: 2;
+  text-align: center;
+}
+
+.trophy-title {
+  top: 52px;
+  font-size: 24px;
+  font-weight: 900;
+}
+
+.trophy-text {
+  top: 360px;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.2;
 }
 
 .hotspots {

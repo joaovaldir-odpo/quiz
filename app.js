@@ -4,6 +4,7 @@ const state = {
   questionIndex: 0,
   score: 0,
   selectedAnswerIndex: null,
+  activeTrophy: null,
 };
 
 const els = {
@@ -14,6 +15,25 @@ const els = {
   fallbackPanel: document.getElementById("fallbackPanel"),
   fallbackTitle: document.getElementById("fallbackTitle"),
   fallbackText: document.getElementById("fallbackText"),
+};
+
+const DEFAULT_NEXT_BUTTON = {
+  x: 38,
+  y: 90.1,
+  width: 58,
+  height: 7.6,
+  visible: true,
+  className: "next-page-hotspot",
+};
+
+const SCREEN_RENDERERS = {
+  intro: renderIntro,
+  theme: renderTheme,
+  question: renderQuestionScreen,
+  wrong: renderWrongScreen,
+  correct: renderCorrectScreen,
+  stickerFull: renderStickerFullScreen,
+  trophy: renderTrophyScreen,
 };
 
 function shouldShowHotspotDebug() {
@@ -46,6 +66,7 @@ function initialScreen() {
     "wrong",
     "correct",
     "stickerFull",
+    "trophy",
   ];
 
   if (allowedScreens.includes(screen)) {
@@ -63,10 +84,14 @@ function loadData() {
   throw new Error("Nao foi possivel carregar as perguntas. Edite questions.js.");
 }
 
+function currentQuestion() {
+  return state.data.questions[state.questionIndex];
+}
+
 function imageFor(screen) {
-  const currentQuestion = state.data.questions[state.questionIndex];
+  const current = currentQuestion();
   return (
-    currentQuestion?.screens?.[screen] ||
+    current?.screens?.[screen] ||
     state.data.screens?.[screen]
   );
 }
@@ -74,30 +99,16 @@ function imageFor(screen) {
 function setScreen(screen) {
   state.screen = screen;
   const src = imageFor(screen);
+  const renderer = SCREEN_RENDERERS[screen];
   els.hotspots.innerHTML = "";
   els.contentLayer.innerHTML = "";
   els.contentLayer.hidden = true;
   els.fallbackPanel.hidden = true;
   els.stage.dataset.screen = screen;
 
-  if (screen === "intro") {
+  if (renderer) {
     els.screenImage.hidden = true;
-    renderIntro();
-  } else if (screen === "theme") {
-    els.screenImage.hidden = true;
-    renderTheme();
-  } else if (screen === "question") {
-    els.screenImage.hidden = true;
-    renderQuestionScreen();
-  } else if (screen === "wrong") {
-    els.screenImage.hidden = true;
-    renderWrongScreen();
-  } else if (screen === "correct") {
-    els.screenImage.hidden = true;
-    renderCorrectScreen();
-  } else if (screen === "stickerFull") {
-    els.screenImage.hidden = true;
-    renderStickerFullScreen();
+    renderer();
   } else if (src) {
     els.screenImage.hidden = false;
     els.screenImage.src = encodeURI(src);
@@ -115,61 +126,46 @@ function renderIntro() {
   els.contentLayer.hidden = false;
   els.contentLayer.innerHTML = `
     <article class="intro-page">
-      ${(intro.paragraphs || [])
-        .map((paragraph) => `<p>${formatText(paragraph)}</p>`)
-        .join("")}
+      ${renderParagraphs(intro.paragraphs)}
     </article>
   `;
 }
 
 function renderTheme() {
-  const current = state.data.questions[state.questionIndex];
+  const current = currentQuestion();
   const theme = current.theme || {};
   els.contentLayer.hidden = false;
   els.contentLayer.innerHTML = `
     <article class="theme-page">
       <img class="theme-bg" src="${escapeAttribute(theme.background || "")}" alt="" />
       ${renderScreenHeader()}
-      <div class="theme-speech">${formatText(theme.speech || "")}</div>
-      <img class="theme-character" src="${escapeAttribute(theme.character || "")}" alt="" />
-      <section class="theme-copy">
-        ${(theme.paragraphs || [])
-          .map((paragraph) => `<p>${formatText(paragraph)}</p>`)
-          .join("")}
-      </section>      
+      <div class="theme-speech"${styleAttribute(theme.speechStyle)}>${formatText(theme.speech || "")}</div>
+      ${renderImage("theme-character", theme.character, theme.characterStyle)}
+      <section class="theme-copy"${styleAttribute(theme.copyStyle)}>
+        ${renderParagraphs(theme.paragraphs)}
+      </section>
     </article>
   `;
 }
 
 function renderQuestionScreen() {
-  const current = state.data.questions[state.questionIndex];
+  const current = currentQuestion();
   const questionScreen = current.questionScreen || {};
   els.contentLayer.hidden = false;
   els.contentLayer.innerHTML = `
     <article class="question-page">
       <img class="question-bg" src="${escapeAttribute(questionScreen.background || "")}" alt="" />
       ${renderScreenHeader("question-topbar")}
-      <img class="question-character" src="${escapeAttribute(questionScreen.character || "")}" alt="" />
-      <div class="question-speech">${formatText(questionScreen.speech || "")}</div>
-      <div class="question-banner">${formatText(current.question)}</div>
-      <div class="answer-card answer-card-a">
-        <span>A</span>
-        <p>${formatText(current.answers[0]?.text || "")}</p>
-      </div>
-      <div class="answer-card answer-card-b">
-        <span>B</span>
-        <p>${formatText(current.answers[1]?.text || "")}</p>
-      </div>
-      <div class="answer-card answer-card-c">
-        <span>C</span>
-        <p>${formatText(current.answers[2]?.text || "")}</p>
-      </div>
+      ${renderImage("question-character", questionScreen.character, questionScreen.characterStyle)}
+      <div class="question-speech"${styleAttribute(questionScreen.speechStyle)}>${formatText(questionScreen.speech || "")}</div>
+      <div class="question-banner"${styleAttribute(questionScreen.bannerStyle)}>${formatText(current.question)}</div>
+      ${renderAnswerCards(current)}
     </article>
   `;
 }
 
 function renderWrongScreen() {
-  const current = state.data.questions[state.questionIndex];
+  const current = currentQuestion();
   const wrongScreen = current.wrongScreen || {};
   const selectedAnswer = current.answers[state.selectedAnswerIndex];
   const wrongAnswer =
@@ -181,21 +177,21 @@ function renderWrongScreen() {
     <article class="wrong-page">
       <img class="wrong-bg" src="${escapeAttribute(wrongScreen.background || "")}" alt="" />
       ${renderScreenHeader("wrong-topbar")}
-      <img class="wrong-character" src="${escapeAttribute(wrongScreen.character || "")}" alt="" />
-      <div class="wrong-speech">${formatText(wrongScreen.speech || "")}</div>
-      <div class="wrong-question">${formatText(current.question)}</div>
-      <div class="wrong-answer">
+      ${renderImage("wrong-character", wrongScreen.character, wrongScreen.characterStyle)}
+      <div class="wrong-speech"${styleAttribute(wrongScreen.speechStyle)}>${formatText(wrongScreen.speech || "")}</div>
+      <div class="wrong-question"${styleAttribute(wrongScreen.questionStyle)}>${formatText(current.question)}</div>
+      <div class="wrong-answer"${styleAttribute(wrongScreen.answerStyle)}>
         <span aria-hidden="true">X</span>
         <p>${formatText(wrongAnswer?.text || "")}</p>
       </div>
-      <div class="back-button-visual">Volte</div>
-      <div class="back-arrow" aria-hidden="true"></div>
+      <div class="back-button-visual"${styleAttribute(wrongScreen.backButtonStyle)}>Volte</div>
+      <div class="back-arrow" aria-hidden="true"${styleAttribute(wrongScreen.backArrowStyle)}></div>
     </article>
   `;
 }
 
 function renderCorrectScreen() {
-  const current = state.data.questions[state.questionIndex];
+  const current = currentQuestion();
   const correctScreen = current.correctScreen || {};
   els.contentLayer.hidden = false;
   els.contentLayer.innerHTML = `
@@ -205,21 +201,34 @@ function renderCorrectScreen() {
         <div class="screen-logo screen-logo-left">LOGO<br />ESCOLA</div>
         <div class="screen-logo screen-logo-right">LOGO<br />Consultoria</div>
       </div>
-      <img class="sticker-header" src="${escapeAttribute(correctScreen.header || "")}" alt="" />
-      <div class="sticker-title">${formatText(correctScreen.title || "")}</div>
-      <img class="sticker-card" src="${escapeAttribute(correctScreen.sticker || "")}" alt="" />
+      ${renderImage("sticker-header", correctScreen.header, correctScreen.headerStyle)}
+      <div class="sticker-title"${styleAttribute(correctScreen.titleStyle)}>${formatText(correctScreen.title || "")}</div>
+      ${renderImage("sticker-card", correctScreen.sticker, correctScreen.stickerStyle)}
     </article>
   `;
 }
 
 function renderStickerFullScreen() {
-  const current = state.data.questions[state.questionIndex];
+  const current = currentQuestion();
   const stickerFull = current.stickerFullScreen || {};
   els.contentLayer.hidden = false;
   els.contentLayer.innerHTML = `
     <article class="sticker-full-page">
       <img class="sticker-full-bg" src="${escapeAttribute(stickerFull.background || "")}" alt="" />
-      <img class="sticker-full-card" src="${escapeAttribute(stickerFull.sticker || "")}" alt="" />
+      ${renderImage("sticker-full-card", stickerFull.sticker, stickerFull.stickerStyle)}
+    </article>
+  `;
+}
+
+function renderTrophyScreen() {
+  const trophy = state.activeTrophy || {};
+  els.contentLayer.hidden = false;
+  els.contentLayer.innerHTML = `
+    <article class="trophy-page">
+      ${renderImage("trophy-bg", trophy.background, trophy.backgroundStyle)}
+      ${renderImage("trophy-image", trophy.image, trophy.imageStyle)}
+      <div class="trophy-title"${styleAttribute(trophy.titleStyle)}>${formatText(trophy.title || "")}</div>
+      <div class="trophy-text"${styleAttribute(trophy.textStyle)}>${formatText(trophy.text || "")}</div>
     </article>
   `;
 }
@@ -232,6 +241,45 @@ function renderScreenHeader(extraClass = "") {
       <div class="screen-logo screen-logo-right">LOGO<br />Consultoria</div>
     </header>
   `;
+}
+
+function renderImage(className, src, style = {}) {
+  if (!src) return "";
+  return `<img class="${className}" src="${escapeAttribute(src)}" alt=""${styleAttribute(style)} />`;
+}
+
+function renderParagraphs(paragraphs = []) {
+  return paragraphs.map((paragraph) => `<p>${formatText(paragraph)}</p>`).join("");
+}
+
+function renderAnswerCards(question) {
+  const cards = question.questionScreen?.answerCards || [];
+
+  return question.answers
+    .map((answer, index) => {
+      const letter = answer.letter || String.fromCharCode(65 + index);
+      const style = cards[index] || {};
+
+      return `
+        <div class="answer-card"${styleAttribute(style)}>
+          <span>${formatText(letter)}</span>
+          <p>${formatText(answer.text || "")}</p>
+        </div>
+      `;
+    })
+    .join("");
+}
+
+function styleAttribute(style = {}) {
+  const rules = Object.entries(style)
+    .filter(([, value]) => value !== undefined && value !== null && value !== "")
+    .map(([property, value]) => {
+      const cssProperty = property.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
+      const cssValue = typeof value === "number" ? `${value}px` : String(value);
+      return `${cssProperty}: ${escapeAttribute(cssValue)}`;
+    });
+
+  return rules.length ? ` style="${rules.join("; ")}"` : "";
 }
 
 function formatText(text) {
@@ -301,12 +349,9 @@ function renderHotspots() {
   if (state.screen === "theme") {
     createHotspot({
       label: "Próxima página",
-      x: 38,
+      ...DEFAULT_NEXT_BUTTON,
       y: 69,
-      width: 58,
-      height: 7.6,
-      visible: true,
-      className: "next-page-hotspot",
+      ...(currentQuestion().theme?.nextButton || {}),
       action: () => setScreen("question"),
     });
     return;
@@ -320,10 +365,7 @@ function renderHotspots() {
   if (state.screen === "wrong") {
     createHotspot({
       label: "Volte",
-      x: 27,
-      y: 72,
-      width: 29,
-      height: 8,
+      ...(currentQuestion().wrongScreen?.backHotspot || { x: 27, y: 72, width: 29, height: 8 }),
       action: () => setScreen("question"),
     });
     return;
@@ -332,12 +374,9 @@ function renderHotspots() {
   if (state.screen === "correct") {
     createHotspot({
       label: "Próxima página",
-      x: 38,
+      ...DEFAULT_NEXT_BUTTON,
       y: 79.8,
-      width: 58,
-      height: 7.6,
-      visible: true,
-      className: "next-page-hotspot",
+      ...(currentQuestion().correctScreen?.nextButton || {}),
       action: () => setScreen("stickerFull"),
     });
     return;
@@ -346,19 +385,25 @@ function renderHotspots() {
   if (state.screen === "stickerFull") {
     createHotspot({
       label: "Próxima página",
-      x: 38,
-      y: 90.1,
-      width: 58,
-      height: 7.6,
-      visible: true,
-      className: "next-page-hotspot",
+      ...DEFAULT_NEXT_BUTTON,
+      ...(currentQuestion().stickerFullScreen?.nextButton || {}),
+      action: completeQuestion,
+    });
+    return;
+  }
+
+  if (state.screen === "trophy") {
+    createHotspot({
+      label: "Próxima página",
+      ...DEFAULT_NEXT_BUTTON,
+      ...(state.activeTrophy?.nextButton || {}),
       action: nextQuestion,
     });
   }
 }
 
 function renderAnswers() {
-  const current = state.data.questions[state.questionIndex];
+  const current = currentQuestion();
   current.answers.forEach((answer, index) => {
     const area =
       current.questionScreen?.answerAreas?.[index] ||
@@ -387,10 +432,30 @@ function selectAnswer(button, correct, index) {
   setTimeout(() => setScreen("wrong"), 350);
 }
 
+function completeQuestion() {
+  const completedQuestion = state.questionIndex + 1;
+  const trophy = trophyForCompletedQuestion(completedQuestion);
+
+  if (trophy) {
+    state.activeTrophy = trophy;
+    setScreen("trophy");
+    return;
+  }
+
+  nextQuestion();
+}
+
+function trophyForCompletedQuestion(completedQuestion) {
+  return (state.data.trophies || []).find(
+    (trophy) => trophy.afterQuestion === completedQuestion
+  );
+}
+
 function nextQuestion() {
   if (state.questionIndex < state.data.questions.length - 1) {
     state.questionIndex += 1;
     state.selectedAnswerIndex = null;
+    state.activeTrophy = null;
     setScreen("theme");
     return;
   }
@@ -398,6 +463,7 @@ function nextQuestion() {
   state.questionIndex = 0;
   state.score = 0;
   state.selectedAnswerIndex = null;
+  state.activeTrophy = null;
   setScreen("home");
 }
 
