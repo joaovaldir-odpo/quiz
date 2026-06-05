@@ -24,10 +24,20 @@ window.QUIZ_DATA = {
     {
       question: "Quando um aplicativo ou jogo precisa proteger crianças?",
       screens: {
-        theme: "doc/tema1.PNG",
         question: "doc/pergunta1.PNG",
         correct: "doc/resposta-certa1.PNG",
         wrong: "doc/resposta-errada1.PNG",
+      },
+      theme: {
+        background: "assets/album-1/pergunta-1/fundo.png",
+        character: "assets/album-1/pergunta-1/enki.png",
+        speech:
+          "Oi, meu nome é **[[white:ENKI]]** e vou ajudar você nessa aventura, vamos começar!",
+        paragraphs: [
+          "A lei **protege crianças e adolescentes** em jogos, \naplicativos e sites.",
+          "",
+          "Se um serviço digital é feito para esse público ou **pode ser acessado** facilmente **por eles**, devem ser adotadas medidas de proteção, mesmo que a empresa seja de outro país.",
+        ],
       },
       answers: [
         {

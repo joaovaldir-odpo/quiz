@@ -62,6 +62,9 @@ function setScreen(screen) {
   if (screen === "intro") {
     els.screenImage.hidden = true;
     renderIntro();
+  } else if (screen === "theme") {
+    els.screenImage.hidden = true;
+    renderTheme();
   } else if (src) {
     els.screenImage.hidden = false;
     els.screenImage.src = encodeURI(src);
@@ -86,8 +89,38 @@ function renderIntro() {
   `;
 }
 
+function renderTheme() {
+  const current = state.data.questions[state.questionIndex];
+  const theme = current.theme || {};
+  els.contentLayer.hidden = false;
+  els.contentLayer.innerHTML = `
+    <article class="theme-page">
+      <img class="theme-bg" src="${escapeAttribute(theme.background || "")}" alt="" />
+      <header class="theme-topbar">
+        <div class="theme-logo theme-logo-left">LOGO<br />ESCOLA</div>
+        <div class="theme-section">ECA DIGITAL - seção - 01</div>
+        <div class="theme-logo theme-logo-right">LOGO<br />Consultoria</div>
+      </header>
+      <div class="theme-speech">${formatText(theme.speech || "")}</div>
+      <img class="theme-character" src="${escapeAttribute(theme.character || "")}" alt="" />
+      <section class="theme-copy">
+        ${(theme.paragraphs || [])
+          .map((paragraph) => `<p>${formatText(paragraph)}</p>`)
+          .join("")}
+      </section>      
+    </article>
+  `;
+}
+
 function formatText(text) {
-  return escapeHtml(text).replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+  return escapeHtml(text)
+    .replace(/\[\[white:(.*?)\]\]/g, '<span class="text-white">$1</span>')
+    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\\n|\n/g, "<br />");
+}
+
+function escapeAttribute(text) {
+  return escapeHtml(text).replaceAll("`", "&#096;");
 }
 
 function escapeHtml(text) {
@@ -146,10 +179,12 @@ function renderHotspots() {
   if (state.screen === "theme") {
     createHotspot({
       label: "Próxima página",
-      x: 39,
-      y: 80,
-      width: 42,
-      height: 5.5,
+      x: 38,
+      y: 69,
+      width: 58,
+      height: 7.6,
+      visible: true,
+      className: "next-page-hotspot",
       action: () => setScreen("question"),
     });
     return;
