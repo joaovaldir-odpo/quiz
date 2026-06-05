@@ -26,8 +26,8 @@ window.QUIZ_DATA = {
       question: "Quando um aplicativo ou jogo precisa proteger crianças?",
       screens: {},
       theme: {
-        background: "assets/album-1/pergunta-1/fundo.png",
-        character: "assets/album-1/pergunta-1/enki.png",
+        background: "assets/album-1/geral/fundo.png",
+        character: "assets/album-1/geral/enki.png",
         characterStyle: { top: 70, right: 0, width: 128 },
         speech:
           "Oi, meu nome é **[[white:ENKI]]** e vou ajudar você nessa aventura, vamos começar!",
@@ -41,7 +41,7 @@ window.QUIZ_DATA = {
         ],
       },
       questionScreen: {
-        background: "assets/album-1/pergunta-1/fundo.png",
+        background: "assets/album-1/geral/fundo.png",
         character: "assets/album-1/pergunta-1/inanna.png",
         characterStyle: { top: 70, left: 10, width: 240 },
         speech:
@@ -60,7 +60,7 @@ window.QUIZ_DATA = {
         ],
       },
       wrongScreen: {
-        background: "assets/album-1/pergunta-1/fundo.png",
+        background: "assets/album-1/geral/fundo.png",
         character: "assets/album-1/pergunta-1/inanna-resposta-errada.png",
         characterStyle: { top: 10, left: 60, width: 400 },
         speech: "Leia com atenção",
@@ -72,8 +72,8 @@ window.QUIZ_DATA = {
         backHotspot: { x: 27, y: 72, width: 29, height: 8 },
       },
       correctScreen: {
-        background: "assets/album-1/pergunta-1/fundo-figurinha.png",
-        header: "assets/album-1/pergunta-1/header-figurinha.png",
+        background: "assets/album-1/geral/fundo-figurinha.png",
+        header: "assets/album-1/geral/header-figurinha.png",
         sticker: "assets/album-1/pergunta-1/figurinha.png",
         title: "FIGURINHA (Nº 01)",
         headerStyle: { top: 7, left: 86, width: 188 },
@@ -82,7 +82,7 @@ window.QUIZ_DATA = {
         nextButton: { y: 79.8 },
       },
       stickerFullScreen: {
-        background: "assets/album-1/pergunta-1/fundo.png",
+        background: "assets/album-1/geral/fundo.png",
         sticker: "assets/album-1/pergunta-1/figurinha.png",
         stickerStyle: { top: -10, left: -24, width: 398, maxHeight: 580 },
       },

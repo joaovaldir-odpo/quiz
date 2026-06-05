@@ -10,6 +10,13 @@ Projeto simples de quiz estatico para publicar no GitHub Pages.
 - `questions.js`: perguntas e respostas usadas pela pagina
 - `assets/`: imagens do cenario
 
+Organizacao sugerida dos assets:
+
+- `assets/album-1/geral/`: imagens compartilhadas entre perguntas
+- `assets/album-1/pergunta-1/`: imagens especificas da pergunta 1
+- `assets/album-1/pergunta-2/`: imagens especificas da pergunta 2
+- `doc/`: imagens de referencia dos prototipos
+
 ## Como editar
 
 Abra `questions.js` e altere:
@@ -52,13 +59,13 @@ Exemplo:
 {
   question: "Texto da pergunta",
   theme: {
-    background: "assets/album-1/pergunta-2/fundo.png",
+    background: "assets/album-1/geral/fundo.png",
     character: "assets/album-1/pergunta-2/personagem.png",
     characterStyle: { top: 70, right: 0, width: 128 },
     speech: "Texto do balao",
   },
   questionScreen: {
-    background: "assets/album-1/pergunta-2/fundo.png",
+    background: "assets/album-1/geral/fundo.png",
     character: "assets/album-1/pergunta-2/personagem.png",
     answerCards: [
       { top: 423, left: 20, width: 90 },
