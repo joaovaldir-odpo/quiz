@@ -65,6 +65,9 @@ function setScreen(screen) {
   } else if (screen === "theme") {
     els.screenImage.hidden = true;
     renderTheme();
+  } else if (screen === "question") {
+    els.screenImage.hidden = true;
+    renderQuestionScreen();
   } else if (src) {
     els.screenImage.hidden = false;
     els.screenImage.src = encodeURI(src);
@@ -96,11 +99,7 @@ function renderTheme() {
   els.contentLayer.innerHTML = `
     <article class="theme-page">
       <img class="theme-bg" src="${escapeAttribute(theme.background || "")}" alt="" />
-      <header class="theme-topbar">
-        <div class="theme-logo theme-logo-left">LOGO<br />ESCOLA</div>
-        <div class="theme-section">ECA DIGITAL - seção - 01</div>
-        <div class="theme-logo theme-logo-right">LOGO<br />Consultoria</div>
-      </header>
+      ${renderScreenHeader()}
       <div class="theme-speech">${formatText(theme.speech || "")}</div>
       <img class="theme-character" src="${escapeAttribute(theme.character || "")}" alt="" />
       <section class="theme-copy">
@@ -109,6 +108,43 @@ function renderTheme() {
           .join("")}
       </section>      
     </article>
+  `;
+}
+
+function renderQuestionScreen() {
+  const current = state.data.questions[state.questionIndex];
+  const questionScreen = current.questionScreen || {};
+  els.contentLayer.hidden = false;
+  els.contentLayer.innerHTML = `
+    <article class="question-page">
+      <img class="question-bg" src="${escapeAttribute(questionScreen.background || "")}" alt="" />
+      ${renderScreenHeader("question-topbar")}
+      <img class="question-character" src="${escapeAttribute(questionScreen.character || "")}" alt="" />
+      <div class="question-speech">${formatText(questionScreen.speech || "")}</div>
+      <div class="question-banner">${formatText(current.question)}</div>
+      <div class="answer-card answer-card-a">
+        <span>A</span>
+        <p>${formatText(current.answers[0]?.text || "")}</p>
+      </div>
+      <div class="answer-card answer-card-b">
+        <span>B</span>
+        <p>${formatText(current.answers[1]?.text || "")}</p>
+      </div>
+      <div class="answer-card answer-card-c">
+        <span>C</span>
+        <p>${formatText(current.answers[2]?.text || "")}</p>
+      </div>
+    </article>
+  `;
+}
+
+function renderScreenHeader(extraClass = "") {
+  return `
+    <header class="screen-topbar ${extraClass}">
+      <div class="screen-logo screen-logo-left">LOGO<br />ESCOLA</div>
+      <div class="screen-section">ECA DIGITAL - seção - 01</div>
+      <div class="screen-logo screen-logo-right">LOGO<br />Consultoria</div>
+    </header>
   `;
 }
 
@@ -222,7 +258,10 @@ function renderHotspots() {
 function renderAnswers() {
   const current = state.data.questions[state.questionIndex];
   current.answers.forEach((answer, index) => {
-    const area = current.answerAreas?.[index] || state.data.answerAreas[index];
+    const area =
+      current.questionScreen?.answerAreas?.[index] ||
+      current.answerAreas?.[index] ||
+      state.data.answerAreas[index];
     const button = createHotspot({
       label: answer.text,
       ...area,
