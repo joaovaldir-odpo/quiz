@@ -23,7 +23,6 @@ Abra `questions.js` e altere:
 
 - `title`
 - `screens`
-- `answerAreas`
 - `questions`
 
 Cada pergunta aceita:
@@ -71,10 +70,6 @@ Exemplo:
       { top: 423, left: 20, width: 90 },
       { top: 423, left: 135, width: 90 },
     ],
-    answerAreas: [
-      { x: 6, y: 75, width: 26, height: 10 },
-      { x: 38, y: 75, width: 26, height: 10 },
-    ],
   },
   answers: [
     { letter: "A", text: "Resposta A", correct: false },
@@ -92,14 +87,24 @@ Posicoes visuais usam CSS em objetos `*Style`, com valores em pixels:
 - `height`
 - `fontSize`
 
-Areas clicaveis usam porcentagem da tela:
+Em telas de tema, `wrapAvoidStyle` reserva uma area invisivel dentro do texto para ele quebrar ao redor de personagem ou imagem sobreposta:
+
+```js
+wrapAvoidStyle: { width: 150, height: 145, marginLeft: 8 }
+```
+
+O botao `Proxima pagina` usa `nextButton` com porcentagem da tela:
 
 - `x`: distancia da esquerda
 - `y`: distancia do topo
 - `width`: largura
 - `height`: altura
 
-Isso permite ajustar os botoes sem depender do tamanho do celular ou monitor.
+O proprio botao visual e clicavel, entao a area de clique acompanha o desenho.
+
+Nas respostas, o proprio `answerCard` e clicavel. Ajuste a posicao e tamanho em `answerCards`, e a area clicavel acompanha automaticamente.
+
+Na tela de erro, `backControlStyle` controla a posicao do conjunto `Volte` + seta. O conjunto inteiro e clicavel.
 
 ## Trofeus
 
@@ -128,6 +133,14 @@ Voce tambem pode forcar pela URL:
 
 - `?debug=1`: mostra as bordas
 - `?debug=0`: esconde as bordas
+
+Para abrir uma pergunta especifica durante ajustes:
+
+- `?question=2&screen=theme`
+- `?question=2&screen=question`
+- `?question=2&screen=wrong`
+- `?question=2&screen=correct`
+- `?question=2&screen=stickerFull`
 
 ## Publicar no GitHub Pages
 

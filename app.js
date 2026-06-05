@@ -22,11 +22,10 @@ const DEFAULT_NEXT_BUTTON = {
   y: 90.1,
   width: 58,
   height: 7.6,
-  visible: true,
-  className: "next-page-hotspot",
 };
 
 const SCREEN_RENDERERS = {
+  home: renderHome,
   intro: renderIntro,
   theme: renderTheme,
   question: renderQuestionScreen,
@@ -76,6 +75,21 @@ function initialScreen() {
   return "home";
 }
 
+function initialQuestionIndex(data) {
+  const params = new URLSearchParams(window.location.search);
+  const question = Number.parseInt(params.get("question"), 10);
+
+  if (
+    Number.isInteger(question) &&
+    question >= 1 &&
+    question <= data.questions.length
+  ) {
+    return question - 1;
+  }
+
+  return 0;
+}
+
 function loadData() {
   if (window.QUIZ_DATA) {
     return window.QUIZ_DATA;
@@ -118,7 +132,17 @@ function setScreen(screen) {
     els.fallbackPanel.hidden = false;
   }
 
-  renderHotspots();
+  bindScreenControls();
+}
+
+function renderHome() {
+  els.contentLayer.hidden = false;
+  els.contentLayer.innerHTML = `
+    <article class="home-page">
+      <img class="home-image" src="${escapeAttribute(state.data.screens?.home || "")}" alt="${escapeAttribute(state.data.title || "")}" />
+      ${renderNextButton("intro")}
+    </article>
+  `;
 }
 
 function renderIntro() {
@@ -127,6 +151,7 @@ function renderIntro() {
   els.contentLayer.innerHTML = `
     <article class="intro-page">
       ${renderParagraphs(intro.paragraphs)}
+      ${renderNextButton("theme")}
     </article>
   `;
 }
@@ -139,11 +164,13 @@ function renderTheme() {
     <article class="theme-page">
       <img class="theme-bg" src="${escapeAttribute(theme.background || "")}" alt="" />
       ${renderScreenHeader()}
-      <div class="theme-speech"${styleAttribute(theme.speechStyle)}>${formatText(theme.speech || "")}</div>
+      ${theme.speech ? `<div class="theme-speech"${styleAttribute(theme.speechStyle)}>${formatText(theme.speech)}</div>` : ""}
       ${renderImage("theme-character", theme.character, theme.characterStyle)}
-      <section class="theme-copy"${styleAttribute(theme.copyStyle)}>
+      <section class="theme-copy ${theme.copyClass || ""}"${styleAttribute(theme.copyStyle)}>
+        ${renderTextWrapSpacer(theme.wrapAvoidStyle)}
         ${renderParagraphs(theme.paragraphs)}
       </section>
+      ${renderNextButton("question", theme.nextButton)}
     </article>
   `;
 }
@@ -157,7 +184,7 @@ function renderQuestionScreen() {
       <img class="question-bg" src="${escapeAttribute(questionScreen.background || "")}" alt="" />
       ${renderScreenHeader("question-topbar")}
       ${renderImage("question-character", questionScreen.character, questionScreen.characterStyle)}
-      <div class="question-speech"${styleAttribute(questionScreen.speechStyle)}>${formatText(questionScreen.speech || "")}</div>
+      <div class="question-speech ${questionScreen.speechClass || ""}"${styleAttribute(questionScreen.speechStyle)}>${formatText(questionScreen.speech || "")}</div>
       <div class="question-banner"${styleAttribute(questionScreen.bannerStyle)}>${formatText(current.question)}</div>
       ${renderAnswerCards(current)}
     </article>
@@ -179,13 +206,12 @@ function renderWrongScreen() {
       ${renderScreenHeader("wrong-topbar")}
       ${renderImage("wrong-character", wrongScreen.character, wrongScreen.characterStyle)}
       <div class="wrong-speech"${styleAttribute(wrongScreen.speechStyle)}>${formatText(wrongScreen.speech || "")}</div>
-      <div class="wrong-question"${styleAttribute(wrongScreen.questionStyle)}>${formatText(current.question)}</div>
+      <div class="wrong-question"${styleAttribute(wrongScreen.questionStyle)}>${formatText(wrongScreen.question || current.question)}</div>
       <div class="wrong-answer"${styleAttribute(wrongScreen.answerStyle)}>
         <span aria-hidden="true">X</span>
         <p>${formatText(wrongAnswer?.text || "")}</p>
       </div>
-      <div class="back-button-visual"${styleAttribute(wrongScreen.backButtonStyle)}>Volte</div>
-      <div class="back-arrow" aria-hidden="true"${styleAttribute(wrongScreen.backArrowStyle)}></div>
+      ${renderBackControl(wrongScreen.backControlStyle || wrongScreen.backButtonStyle)}
     </article>
   `;
 }
@@ -204,6 +230,7 @@ function renderCorrectScreen() {
       ${renderImage("sticker-header", correctScreen.header, correctScreen.headerStyle)}
       <div class="sticker-title"${styleAttribute(correctScreen.titleStyle)}>${formatText(correctScreen.title || "")}</div>
       ${renderImage("sticker-card", correctScreen.sticker, correctScreen.stickerStyle)}
+      ${renderNextButton("stickerFull", correctScreen.nextButton)}
     </article>
   `;
 }
@@ -216,6 +243,7 @@ function renderStickerFullScreen() {
     <article class="sticker-full-page">
       <img class="sticker-full-bg" src="${escapeAttribute(stickerFull.background || "")}" alt="" />
       ${renderImage("sticker-full-card", stickerFull.sticker, stickerFull.stickerStyle)}
+      ${renderNextButton("completeQuestion", stickerFull.nextButton)}
     </article>
   `;
 }
@@ -229,15 +257,21 @@ function renderTrophyScreen() {
       ${renderImage("trophy-image", trophy.image, trophy.imageStyle)}
       <div class="trophy-title"${styleAttribute(trophy.titleStyle)}>${formatText(trophy.title || "")}</div>
       <div class="trophy-text"${styleAttribute(trophy.textStyle)}>${formatText(trophy.text || "")}</div>
+      ${renderNextButton("nextQuestion", trophy.nextButton)}
     </article>
   `;
 }
 
 function renderScreenHeader(extraClass = "") {
+  const sectionTitle =
+    currentQuestion()?.sectionTitle ||
+    state.data.sectionTitle ||
+    "ECA DIGITAL - seção - 01";
+
   return `
     <header class="screen-topbar ${extraClass}">
       <div class="screen-logo screen-logo-left">LOGO<br />ESCOLA</div>
-      <div class="screen-section">ECA DIGITAL - seção - 01</div>
+      <div class="screen-section">${formatText(sectionTitle)}</div>
       <div class="screen-logo screen-logo-right">LOGO<br />Consultoria</div>
     </header>
   `;
@@ -246,6 +280,33 @@ function renderScreenHeader(extraClass = "") {
 function renderImage(className, src, style = {}) {
   if (!src) return "";
   return `<img class="${className}" src="${escapeAttribute(src)}" alt=""${styleAttribute(style)} />`;
+}
+
+function renderTextWrapSpacer(style = {}) {
+  if (!Object.keys(style).length) return "";
+  return `<span class="text-wrap-spacer" aria-hidden="true"${styleAttribute(style)}></span>`;
+}
+
+function renderNextButton(action, style = {}) {
+  return `
+    <button
+      type="button"
+      class="next-page-button"
+      data-nav-action="${escapeAttribute(action)}"
+      ${navigationStyleAttribute({ ...DEFAULT_NEXT_BUTTON, ...style })}
+    >
+      <span>Próxima página</span>
+    </button>
+  `;
+}
+
+function renderBackControl(style = {}) {
+  return `
+    <button type="button" class="back-control" data-nav-action="question"${styleAttribute(positionOnlyStyle(style))}>
+      <span class="back-button-visual">Volte</span>
+      <span class="back-arrow" aria-hidden="true"></span>
+    </button>
+  `;
 }
 
 function renderParagraphs(paragraphs = []) {
@@ -261,10 +322,17 @@ function renderAnswerCards(question) {
       const style = cards[index] || {};
 
       return `
-        <div class="answer-card"${styleAttribute(style)}>
+        <button
+          type="button"
+          class="answer-card"
+          data-answer-index="${index}"
+          data-answer-correct="${answer.correct ? "true" : "false"}"
+          aria-label="${escapeAttribute(answer.text || "")}"
+          ${styleAttribute(style)}
+        >
           <span>${formatText(letter)}</span>
           <p>${formatText(answer.text || "")}</p>
-        </div>
+        </button>
       `;
     })
     .join("");
@@ -276,6 +344,33 @@ function styleAttribute(style = {}) {
     .map(([property, value]) => {
       const cssProperty = property.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
       const cssValue = typeof value === "number" ? `${value}px` : String(value);
+      return `${cssProperty}: ${escapeAttribute(cssValue)}`;
+    });
+
+  return rules.length ? ` style="${rules.join("; ")}"` : "";
+}
+
+function positionOnlyStyle(style = {}) {
+  const { top, right, bottom, left } = style;
+  return { top, right, bottom, left };
+}
+
+function navigationStyleAttribute(style = {}) {
+  const rules = Object.entries(style)
+    .filter(([, value]) => value !== undefined && value !== null && value !== "")
+    .map(([property, value]) => {
+      const cssProperty =
+        property === "x"
+          ? "left"
+          : property === "y"
+            ? "top"
+            : property.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
+      const cssValue =
+        ["x", "y", "width", "height"].includes(property) && typeof value === "number"
+          ? `${value}%`
+          : typeof value === "number"
+            ? `${value}px`
+            : String(value);
       return `${cssProperty}: ${escapeAttribute(cssValue)}`;
     });
 
@@ -302,126 +397,51 @@ function escapeHtml(text) {
     .replaceAll("'", "&#039;");
 }
 
-function createHotspot({ label, x, y, width, height, action, visible, className }) {
-  const button = document.createElement("button");
-  button.type = "button";
-  button.className = `hotspot ${className || ""} ${visible ? "visible" : ""}`.trim();
-  button.style.left = `${x}%`;
-  button.style.top = `${y}%`;
-  button.style.width = `${width}%`;
-  button.style.height = `${height}%`;
-  button.setAttribute("aria-label", label);
-  button.innerHTML = `<span class="hotspot-label">${label}</span>`;
-  button.addEventListener("click", action);
-  els.hotspots.appendChild(button);
-  return button;
-}
-
-function renderHotspots() {
-  if (state.screen === "home") {
-    createHotspot({
-      label: "Próxima página",
-      x: 38,
-      y: 90.1,
-      width: 58,
-      height: 7.6,
-      visible: true,
-      className: "next-page-hotspot",
-      action: () => setScreen("intro"),
-    });
-    return;
-  }
-
-  if (state.screen === "intro") {
-    createHotspot({
-      label: "Próxima página",
-      x: 38,
-      y: 90.1,
-      width: 58,
-      height: 7.6,
-      visible: true,
-      className: "next-page-hotspot",
-      action: () => setScreen("theme"),
-    });
-    return;
-  }
-
-  if (state.screen === "theme") {
-    createHotspot({
-      label: "Próxima página",
-      ...DEFAULT_NEXT_BUTTON,
-      y: 69,
-      ...(currentQuestion().theme?.nextButton || {}),
-      action: () => setScreen("question"),
-    });
-    return;
-  }
-
+function bindScreenControls() {
   if (state.screen === "question") {
-    renderAnswers();
-    return;
+    bindAnswerCards();
   }
 
-  if (state.screen === "wrong") {
-    createHotspot({
-      label: "Volte",
-      ...(currentQuestion().wrongScreen?.backHotspot || { x: 27, y: 72, width: 29, height: 8 }),
-      action: () => setScreen("question"),
-    });
-    return;
-  }
-
-  if (state.screen === "correct") {
-    createHotspot({
-      label: "Próxima página",
-      ...DEFAULT_NEXT_BUTTON,
-      y: 79.8,
-      ...(currentQuestion().correctScreen?.nextButton || {}),
-      action: () => setScreen("stickerFull"),
-    });
-    return;
-  }
-
-  if (state.screen === "stickerFull") {
-    createHotspot({
-      label: "Próxima página",
-      ...DEFAULT_NEXT_BUTTON,
-      ...(currentQuestion().stickerFullScreen?.nextButton || {}),
-      action: completeQuestion,
-    });
-    return;
-  }
-
-  if (state.screen === "trophy") {
-    createHotspot({
-      label: "Próxima página",
-      ...DEFAULT_NEXT_BUTTON,
-      ...(state.activeTrophy?.nextButton || {}),
-      action: nextQuestion,
-    });
-  }
-}
-
-function renderAnswers() {
-  const current = currentQuestion();
-  current.answers.forEach((answer, index) => {
-    const area =
-      current.questionScreen?.answerAreas?.[index] ||
-      current.answerAreas?.[index] ||
-      state.data.answerAreas[index];
-    const button = createHotspot({
-      label: answer.text,
-      ...area,
-      action: () => selectAnswer(button, answer.correct, index),
-      className: "answer-hotspot",
-    });
-    button.dataset.letter = answer.letter || String.fromCharCode(65 + index);
+  els.contentLayer.querySelectorAll("[data-nav-action]").forEach((control) => {
+    control.addEventListener("click", () => runNavAction(control.dataset.navAction));
   });
 }
 
-function selectAnswer(button, correct, index) {
+function runNavAction(action) {
+  if (action === "completeQuestion") {
+    completeQuestion();
+    return;
+  }
+
+  if (action === "nextQuestion") {
+    nextQuestion();
+    return;
+  }
+
+  setScreen(action);
+}
+
+function bindAnswerCards() {
+  const current = currentQuestion();
+  els.contentLayer.querySelectorAll(".answer-card").forEach((card) => {
+    const index = Number.parseInt(card.dataset.answerIndex, 10);
+    const answer = current.answers[index];
+
+    card.addEventListener("click", () => {
+      selectAnswer(card, answer.correct, index);
+    });
+  });
+}
+
+function selectAnswer(card, correct, index) {
   state.selectedAnswerIndex = index;
-  button.classList.add(correct ? "selected-correct" : "selected-wrong");
+  els.contentLayer
+    .querySelectorAll(".answer-card")
+    .forEach((answerCard) => {
+      answerCard.disabled = true;
+      answerCard.classList.remove("selected-correct", "selected-wrong");
+    });
+  card.classList.add(correct ? "selected-correct" : "selected-wrong");
 
   if (correct) {
     state.score += 1;
@@ -469,6 +489,7 @@ function nextQuestion() {
 
 function init() {
   state.data = loadData();
+  state.questionIndex = initialQuestionIndex(state.data);
   document.title = state.data.title || "Quiz Online";
   document.body.classList.toggle("debug-hotspots", shouldShowHotspotDebug());
   els.screenImage.addEventListener("error", () => {

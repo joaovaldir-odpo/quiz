@@ -15,11 +15,6 @@ window.QUIZ_DATA = {
       "🌟 Sua aventura começa agora!",
     ],
   },
-  answerAreas: [
-    { x: 5, y: 73, width: 25, height: 11 },
-    { x: 37, y: 73, width: 28, height: 11 },
-    { x: 72, y: 73, width: 24, height: 11 },
-  ],
   trophies: [],
   questions: [
     {
@@ -53,11 +48,6 @@ window.QUIZ_DATA = {
           { top: 423, left: 135, width: 90 },
           { top: 423, left: 250, width: 90 },
         ],
-        answerAreas: [
-          { x: 6, y: 75, width: 26, height: 10 },
-          { x: 38, y: 75, width: 26, height: 10 },
-          { x: 71, y: 75, width: 26, height: 14 },
-        ],
       },
       wrongScreen: {
         background: "assets/album-1/geral/fundo.png",
@@ -67,9 +57,7 @@ window.QUIZ_DATA = {
         speechStyle: { top: 64, left: 100, width: 115, fontSize: 18 },
         questionStyle: { top: 300, left: 13, width: 219 },
         answerStyle: { top: 380, left: 75, width: 140 },
-        backButtonStyle: { top: 430, left: 96, width: 98, height: 43 },
-        backArrowStyle: { top: 458, left: 74, width: 139 },
-        backHotspot: { x: 27, y: 72, width: 29, height: 8 },
+        backControlStyle: { top: 430, left: 74 },
       },
       correctScreen: {
         background: "assets/album-1/geral/fundo-figurinha.png",
@@ -101,6 +89,91 @@ window.QUIZ_DATA = {
           letter: "C",
           text: "Quando é feito para crianças ou pode ser usado por elas.",
           correct: true,
+        },
+      ],
+    },
+    {
+      sectionTitle: "ECA DIGITAL - seção - 02",
+      question:
+        "O que os pais ou responsáveis devem fazer quando seus jovens usam a internet?",
+      screens: {},
+      theme: {
+        background: "assets/album-1/geral/fundo.png",
+        character: "assets/album-1/geral/enki.png",
+        characterStyle: { top: 26, right: -10, width: 190 },
+        copyStyle: {
+          top: 175,
+          left: 8,
+          right: 7,
+          padding: 8,
+          background: "rgba(247, 250, 255, 0.9)",
+          fontSize: 20,
+          lineHeight: "1.16",
+        },
+        wrapAvoidStyle: { width: 100, height: 60, marginLeft: 8 },
+        nextButton: { y: 78 },
+        paragraphs: [
+          "Crianças e adolescentes têm o direito de receber orientação e acompanhamento de seus pais ou responsáveis quando estão usando a internet.",
+          "Os pais ou responsáveis têm o dever de **ajudar, proteger e acompanhar** seus filhos para que usem a internet de forma segura.",
+        ],
+      },
+      questionScreen: {
+        background: "assets/album-1/geral/fundo.png",
+        character: "assets/album-1/pergunta-2/enlil.png",
+        characterStyle: { top: 80, left: 160, width: 210 },
+        speech:
+          "Oi, meu nome é [[white:Enlil]] acerte a resposta e abra a **2ª figurinha**",
+        speechClass: "tail-right",
+        speechStyle: { top: 136, left: 19, width: 216, fontSize: 14 },
+        bannerStyle: { top: 290, left: 37, width: 281, fontSize: 17 },
+        answerCards: [
+          { top: 424, left: 13, width: 100 },
+          { top: 424, left: 126, width: 100 },
+          { top: 424, left: 237, width: 100 },
+        ],
+      },
+      wrongScreen: {
+        background: "assets/album-1/geral/fundo.png",
+        character: "assets/album-1/pergunta-2/enlil-resposta-errada.png",
+        characterStyle: { top: 50, left: 140, width: 250 },
+        speech: "Tente novamente",
+        speechStyle: { top: 80, left: 50, width: 150, fontSize: 19 },
+        question:
+          "O que os pais ou responsáveis devem fazer no uso da internet por crianças e adolescentes?",
+        questionStyle: { top: 250, left: 14, width: 223, fontSize: 13 },
+        answerStyle: { top: 340, left: 70, width: 135 },
+        backControlStyle: { top: 400, left: 75 },
+      },
+      correctScreen: {
+        background: "assets/album-1/geral/fundo-figurinha.png",
+        header: "assets/album-1/geral/header-figurinha.png",
+        sticker: "assets/album-1/pergunta-2/figurinha.png",
+        title: "FIGURINHA (Nº 02)",
+        headerStyle: { top: 8, left: 86, width: 188 },
+        titleStyle: { top: 121, left: 87, width: 186 },
+        stickerStyle: { top: 151, left: 78, width: 207 },
+        nextButton: { y: 79.8 },
+      },
+      stickerFullScreen: {
+        background: "assets/album-1/geral/fundo.png",
+        sticker: "assets/album-1/pergunta-2/figurinha.png",
+        stickerStyle: { top: 0, left: -7, width: 374, maxHeight: 560 },
+      },
+      answers: [
+        {
+          letter: "A",
+          text: "Não se importar com o uso do celular.",
+          correct: false,
+        },
+        {
+          letter: "B",
+          text: "Ajudar, proteger e acompanhar.",
+          correct: true,
+        },
+        {
+          letter: "C",
+          text: "Deixar que elas aprendam sobre os riscos digitais sem supervisão.",
+          correct: false,
         },
       ],
     },

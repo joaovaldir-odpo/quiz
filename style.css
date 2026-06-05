@@ -78,6 +78,24 @@ body {
   object-position: top center;
 }
 
+.home-page {
+  position: relative;
+  height: 100%;
+  background: #0a162f;
+}
+
+.home-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 90%;
+  object-fit: contain;
+  object-position: top center;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
 .content-layer {
   position: absolute;
   inset: 0;
@@ -124,6 +142,7 @@ body {
 .wrong-bg,
 .wrong-character {
   position: absolute;
+  pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
 }
@@ -230,6 +249,12 @@ body {
   margin-bottom: 0;
 }
 
+.text-wrap-spacer {
+  display: block;
+  float: right;
+  shape-outside: inset(0);
+}
+
 .question-page {
   position: relative;
   height: 100%;
@@ -275,6 +300,12 @@ body {
   clip-path: polygon(0 100%, 100% 0, 100% 100%);
 }
 
+.question-speech.tail-right::after {
+  left: auto;
+  right: -10px;
+  clip-path: polygon(0 0, 100% 100%, 0 100%);
+}
+
 .question-banner {
   position: absolute;
   top: 323px;
@@ -292,10 +323,15 @@ body {
 .answer-card {
   position: absolute;
   z-index: 1;
+  border: 0;
+  padding: 0;
   display: grid;
   align-content: start;
   justify-items: center;
   color: #111;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
   font-weight: 900;
   text-align: center;
 }
@@ -324,6 +360,32 @@ body {
   background: #fff;
   font-size: 10px;
   line-height: 1.08;
+}
+
+.answer-card.selected-correct,
+.answer-card.selected-wrong {
+  z-index: 3;
+  border-radius: 4px;
+  outline: 4px solid transparent;
+  outline-offset: 3px;
+}
+
+.answer-card.selected-correct {
+  outline-color: #25d366;
+}
+
+.answer-card.selected-wrong {
+  outline-color: var(--button-red);
+}
+
+.answer-card:disabled {
+  cursor: default;
+}
+
+body.debug-hotspots .answer-card:not(.selected-correct):not(.selected-wrong) {
+  outline: 2px solid #ff1e1e;
+  outline-offset: 3px;
+  background: rgba(255, 0, 0, 0.08);
 }
 
 .wrong-page {
@@ -422,13 +484,26 @@ body {
   text-align: center;
 }
 
-.back-button-visual {
+.back-control {
   position: absolute;
   top: 430px;
   left: 96px;
-  width: 98px;
-  height: 43px;
-  z-index: 2;
+  width: 154px;
+  height: 77px;
+  z-index: 6;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.back-button-visual {
+  position: absolute;
+  top: 0;
+  left: 20px;
+  width: 103px;
+  height: 45px;
   display: grid;
   place-items: center;
   color: #111;
@@ -438,18 +513,19 @@ body {
   font-size: 21px;
   font-weight: 900;
   text-transform: uppercase;
+  pointer-events: none;
 }
 
 .back-arrow {
   position: absolute;
-  top: 458px;
-  left: 74px;
-  width: 139px;
+  top: 40px;
+  left: 0;
+  width: 154px;
   height: 31px;
-  z-index: 1;
   border-bottom: 5px solid #1462c4;
   border-radius: 0 0 70% 70%;
   transform: rotate(-4deg);
+  pointer-events: none;
 }
 
 .back-arrow::before {
@@ -477,6 +553,7 @@ body {
 .sticker-header,
 .sticker-card {
   position: absolute;
+  pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
 }
@@ -543,6 +620,7 @@ body {
 .sticker-full-bg,
 .sticker-full-card {
   position: absolute;
+  pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
 }
@@ -573,6 +651,7 @@ body {
 .trophy-bg,
 .trophy-image {
   position: absolute;
+  pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
 }
@@ -617,55 +696,44 @@ body {
   position: absolute;
   inset: 0;
   z-index: 2;
+  pointer-events: none;
 }
 
-.hotspot {
-  position: absolute;
-  border: 0;
-  padding: 0;
-  background: transparent;
-  cursor: pointer;
-}
-
-body.debug-hotspots .hotspot {
-  border: 2px solid #ff1e1e;
-  background: rgba(255, 0, 0, 0.08);
-}
-
-.hotspot:focus-visible {
+.next-page-button:focus-visible,
+.back-control:focus-visible {
   outline: 3px solid #fff;
   outline-offset: 3px;
 }
 
-.hotspot-label {
+.next-page-button {
   position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  color: transparent;
+  z-index: 10;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
 }
 
-.hotspot.visible .hotspot-label {
-  color: #1b1650;
-  background: var(--button-yellow);
-  border: 3px solid rgba(0, 0, 0, 0.45);
-  font-weight: 800;
-  text-transform: uppercase;
-  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.35);
-}
-
-.next-page-hotspot.visible .hotspot-label {
+.next-page-button span {
+  position: absolute;
   top: 21%;
   right: 48px;
   bottom: 21%;
   left: 0;
+  display: grid;
+  place-items: center;
+  color: #1b1650;
+  background: var(--button-yellow);
   font-size: 11px;
+  font-weight: 800;
   white-space: nowrap;
+  text-transform: uppercase;
   border: 2px solid rgba(0, 0, 0, 0.55);
   box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.35);
 }
 
-.next-page-hotspot::before {
+.next-page-button::before {
   content: "";
   position: absolute;
   right: 0;
@@ -679,7 +747,7 @@ body.debug-hotspots .hotspot {
   box-shadow: 0 2px 0 rgba(0, 0, 0, 0.35);
 }
 
-.next-page-hotspot::after {
+.next-page-button::after {
   content: "";
   position: absolute;
   right: 18px;
@@ -691,25 +759,16 @@ body.debug-hotspots .hotspot {
   clip-path: polygon(0 0, 100% 50%, 0 100%);
 }
 
-.answer-hotspot {
-  border-radius: 4px;
-}
-
-.answer-hotspot::before {
-  content: none;
-}
-
-.answer-hotspot:hover,
-.hotspot.visible:hover .hotspot-label {
+.answer-card:not(:disabled):hover,
+.next-page-button:hover span,
+.back-control:hover .back-button-visual {
   filter: brightness(1.08);
 }
 
-.answer-hotspot.selected-correct {
-  outline: 4px solid #25d366;
-}
-
-.answer-hotspot.selected-wrong {
-  outline: 4px solid var(--button-red);
+body.debug-hotspots .next-page-button,
+body.debug-hotspots .back-control {
+  outline: 2px solid #ff1e1e;
+  outline-offset: 3px;
 }
 
 .fallback-panel {
