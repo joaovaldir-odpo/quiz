@@ -25,7 +25,6 @@ window.QUIZ_DATA = {
       question: "Quando um aplicativo ou jogo precisa proteger crianças?",
       screens: {
         correct: "doc/resposta-certa1.PNG",
-        wrong: "doc/resposta-errada1.PNG",
       },
       theme: {
         background: "assets/album-1/pergunta-1/fundo.png",
@@ -48,6 +47,11 @@ window.QUIZ_DATA = {
           { x: 38, y: 75, width: 26, height: 10 },
           { x: 71, y: 75, width: 26, height: 14 },
         ],
+      },
+      wrongScreen: {
+        background: "assets/album-1/pergunta-1/fundo.png",
+        character: "assets/album-1/pergunta-1/inanna-resposta-errada.png",
+        speech: "Leia com atenção",
       },
       answers: [
         {

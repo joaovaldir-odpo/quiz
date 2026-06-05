@@ -3,6 +3,7 @@ const state = {
   screen: "home",
   questionIndex: 0,
   score: 0,
+  selectedAnswerIndex: null,
 };
 
 const els = {
@@ -32,6 +33,18 @@ function shouldShowHotspotDebug() {
     window.location.hostname === "localhost" ||
     window.location.hostname === "127.0.0.1"
   );
+}
+
+function initialScreen() {
+  const params = new URLSearchParams(window.location.search);
+  const screen = params.get("screen");
+  const allowedScreens = ["home", "intro", "theme", "question", "wrong", "correct"];
+
+  if (allowedScreens.includes(screen)) {
+    return screen;
+  }
+
+  return "home";
 }
 
 function loadData() {
@@ -68,6 +81,9 @@ function setScreen(screen) {
   } else if (screen === "question") {
     els.screenImage.hidden = true;
     renderQuestionScreen();
+  } else if (screen === "wrong") {
+    els.screenImage.hidden = true;
+    renderWrongScreen();
   } else if (src) {
     els.screenImage.hidden = false;
     els.screenImage.src = encodeURI(src);
@@ -134,6 +150,32 @@ function renderQuestionScreen() {
         <span>C</span>
         <p>${formatText(current.answers[2]?.text || "")}</p>
       </div>
+    </article>
+  `;
+}
+
+function renderWrongScreen() {
+  const current = state.data.questions[state.questionIndex];
+  const wrongScreen = current.wrongScreen || {};
+  const selectedAnswer = current.answers[state.selectedAnswerIndex];
+  const wrongAnswer =
+    selectedAnswer ||
+    current.answers.find((answer) => !answer.correct) ||
+    current.answers[0];
+  els.contentLayer.hidden = false;
+  els.contentLayer.innerHTML = `
+    <article class="wrong-page">
+      <img class="wrong-bg" src="${escapeAttribute(wrongScreen.background || "")}" alt="" />
+      ${renderScreenHeader("wrong-topbar")}
+      <img class="wrong-character" src="${escapeAttribute(wrongScreen.character || "")}" alt="" />
+      <div class="wrong-speech">${formatText(wrongScreen.speech || "")}</div>
+      <div class="wrong-question">${formatText(current.question)}</div>
+      <div class="wrong-answer">
+        <span aria-hidden="true">X</span>
+        <p>${formatText(wrongAnswer?.text || "")}</p>
+      </div>
+      <div class="back-button-visual">Volte</div>
+      <div class="back-arrow" aria-hidden="true"></div>
     </article>
   `;
 }
@@ -234,10 +276,10 @@ function renderHotspots() {
   if (state.screen === "wrong") {
     createHotspot({
       label: "Volte",
-      x: 29,
-      y: 70,
-      width: 28,
-      height: 7,
+      x: 27,
+      y: 72,
+      width: 29,
+      height: 8,
       action: () => setScreen("question"),
     });
     return;
@@ -265,14 +307,15 @@ function renderAnswers() {
     const button = createHotspot({
       label: answer.text,
       ...area,
-      action: () => selectAnswer(button, answer.correct),
+      action: () => selectAnswer(button, answer.correct, index),
       className: "answer-hotspot",
     });
     button.dataset.letter = answer.letter || String.fromCharCode(65 + index);
   });
 }
 
-function selectAnswer(button, correct) {
+function selectAnswer(button, correct, index) {
+  state.selectedAnswerIndex = index;
   button.classList.add(correct ? "selected-correct" : "selected-wrong");
 
   if (correct) {
@@ -287,12 +330,14 @@ function selectAnswer(button, correct) {
 function nextQuestion() {
   if (state.questionIndex < state.data.questions.length - 1) {
     state.questionIndex += 1;
+    state.selectedAnswerIndex = null;
     setScreen("theme");
     return;
   }
 
   state.questionIndex = 0;
   state.score = 0;
+  state.selectedAnswerIndex = null;
   setScreen("home");
 }
 
@@ -306,7 +351,7 @@ function init() {
     els.fallbackTitle.textContent = "Imagem nao encontrada";
     els.fallbackText.textContent = "Confira o caminho configurado em questions.js.";
   });
-  setScreen("home");
+  setScreen(initialScreen());
 }
 
 try {
