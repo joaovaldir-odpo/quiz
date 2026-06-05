@@ -53,6 +53,10 @@ body {
   background: #0a162f;
 }
 
+.phone-stage[data-screen="intro"] {
+  background: #f3f0dc;
+}
+
 .screen-image {
   position: absolute;
   inset: 0;
@@ -70,9 +74,37 @@ body {
   object-position: top center;
 }
 
+.content-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.intro-page {
+  height: 100%;
+  padding: 24px 18px 78px;
+  color: #222;
+  font-size: 16px;
+  line-height: 1.12;
+  background: #f3f0dc;
+}
+
+.intro-page p {
+  margin: 0 0 16px;
+}
+
+.intro-page p:first-child {
+  margin-bottom: 22px;
+}
+
+.intro-page strong {
+  font-weight: 800;
+}
+
 .hotspots {
   position: absolute;
   inset: 0;
+  z-index: 2;
 }
 
 .hotspot {

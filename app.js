@@ -8,6 +8,7 @@ const state = {
 const els = {
   stage: document.getElementById("stage"),
   screenImage: document.getElementById("screenImage"),
+  contentLayer: document.getElementById("contentLayer"),
   hotspots: document.getElementById("hotspots"),
   fallbackPanel: document.getElementById("fallbackPanel"),
   fallbackTitle: document.getElementById("fallbackTitle"),
@@ -53,10 +54,15 @@ function setScreen(screen) {
   state.screen = screen;
   const src = imageFor(screen);
   els.hotspots.innerHTML = "";
+  els.contentLayer.innerHTML = "";
+  els.contentLayer.hidden = true;
   els.fallbackPanel.hidden = true;
   els.stage.dataset.screen = screen;
 
-  if (src) {
+  if (screen === "intro") {
+    els.screenImage.hidden = true;
+    renderIntro();
+  } else if (src) {
     els.screenImage.hidden = false;
     els.screenImage.src = encodeURI(src);
     els.screenImage.alt = state.data.altText?.[screen] || state.data.title;
@@ -66,6 +72,31 @@ function setScreen(screen) {
   }
 
   renderHotspots();
+}
+
+function renderIntro() {
+  const intro = state.data.intro || {};
+  els.contentLayer.hidden = false;
+  els.contentLayer.innerHTML = `
+    <article class="intro-page">
+      ${(intro.paragraphs || [])
+        .map((paragraph) => `<p>${formatText(paragraph)}</p>`)
+        .join("")}
+    </article>
+  `;
+}
+
+function formatText(text) {
+  return escapeHtml(text).replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+}
+
+function escapeHtml(text) {
+  return String(text)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
 function createHotspot({ label, x, y, width, height, action, visible, className }) {
@@ -100,11 +131,13 @@ function renderHotspots() {
 
   if (state.screen === "intro") {
     createHotspot({
-      label: "Proxima pagina",
+      label: "Próxima página",
       x: 38,
-      y: 90,
-      width: 42,
-      height: 5.5,
+      y: 90.1,
+      width: 58,
+      height: 7.6,
+      visible: true,
+      className: "next-page-hotspot",
       action: () => setScreen("theme"),
     });
     return;
@@ -112,7 +145,7 @@ function renderHotspots() {
 
   if (state.screen === "theme") {
     createHotspot({
-      label: "Proxima pagina",
+      label: "Próxima página",
       x: 39,
       y: 80,
       width: 42,
@@ -141,7 +174,7 @@ function renderHotspots() {
 
   if (state.screen === "correct") {
     createHotspot({
-      label: "Proxima pagina",
+      label: "Próxima página",
       x: 39,
       y: 80,
       width: 42,
