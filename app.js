@@ -38,7 +38,15 @@ function shouldShowHotspotDebug() {
 function initialScreen() {
   const params = new URLSearchParams(window.location.search);
   const screen = params.get("screen");
-  const allowedScreens = ["home", "intro", "theme", "question", "wrong", "correct"];
+  const allowedScreens = [
+    "home",
+    "intro",
+    "theme",
+    "question",
+    "wrong",
+    "correct",
+    "stickerFull",
+  ];
 
   if (allowedScreens.includes(screen)) {
     return screen;
@@ -87,6 +95,9 @@ function setScreen(screen) {
   } else if (screen === "correct") {
     els.screenImage.hidden = true;
     renderCorrectScreen();
+  } else if (screen === "stickerFull") {
+    els.screenImage.hidden = true;
+    renderStickerFullScreen();
   } else if (src) {
     els.screenImage.hidden = false;
     els.screenImage.src = encodeURI(src);
@@ -201,6 +212,18 @@ function renderCorrectScreen() {
   `;
 }
 
+function renderStickerFullScreen() {
+  const current = state.data.questions[state.questionIndex];
+  const stickerFull = current.stickerFullScreen || {};
+  els.contentLayer.hidden = false;
+  els.contentLayer.innerHTML = `
+    <article class="sticker-full-page">
+      <img class="sticker-full-bg" src="${escapeAttribute(stickerFull.background || "")}" alt="" />
+      <img class="sticker-full-card" src="${escapeAttribute(stickerFull.sticker || "")}" alt="" />
+    </article>
+  `;
+}
+
 function renderScreenHeader(extraClass = "") {
   return `
     <header class="screen-topbar ${extraClass}">
@@ -311,6 +334,20 @@ function renderHotspots() {
       label: "Próxima página",
       x: 38,
       y: 79.8,
+      width: 58,
+      height: 7.6,
+      visible: true,
+      className: "next-page-hotspot",
+      action: () => setScreen("stickerFull"),
+    });
+    return;
+  }
+
+  if (state.screen === "stickerFull") {
+    createHotspot({
+      label: "Próxima página",
+      x: 38,
+      y: 90.1,
       width: 58,
       height: 7.6,
       visible: true,

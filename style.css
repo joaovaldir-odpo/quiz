@@ -551,6 +551,35 @@ body {
   z-index: 2;
 }
 
+.sticker-full-page {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  background: #d7efff;
+}
+
+.sticker-full-bg,
+.sticker-full-card {
+  position: absolute;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.sticker-full-bg {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sticker-full-card {
+  top: -10px;
+  left: -24px;
+  width: 398px;
+  max-height: 580px;
+  object-fit: contain;
+}
+
 .hotspots {
   position: absolute;
   inset: 0;

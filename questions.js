@@ -57,6 +57,10 @@ window.QUIZ_DATA = {
         sticker: "assets/album-1/pergunta-1/figurinha.png",
         title: "FIGURINHA (Nº 01)",
       },
+      stickerFullScreen: {
+        background: "assets/album-1/pergunta-1/fundo.png",
+        sticker: "assets/album-1/pergunta-1/figurinha.png",
+      },
       answers: [
         {
           letter: "A",
