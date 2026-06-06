@@ -15,7 +15,26 @@ window.QUIZ_DATA = {
       "🌟 Sua aventura começa agora!",
     ],
   },
-  trophies: [],
+  trophies: [
+    {
+      afterQuestion: 3,
+      background: "assets/album-1/trofeu-1/fundo.png",
+      image: "assets/album-1/trofeu-1/trofeu.png",
+      text: "Primeira letra do código secreto\n\"**S**\" anote!",
+      imageStyle: { top: 0, left: 28, width: 300 },
+      textStyle: {
+        top: 440,
+        left: 0,
+        right: 0,
+        padding: "11px 20px",
+        color: "#222",
+        background: "#fff",
+        fontSize: 18,
+        lineHeight: "1.15",
+      },
+      nextButton: { y: 90 },
+    },
+  ],
   questions: [
     {
       question: "Quando um aplicativo ou jogo precisa proteger crianças?",

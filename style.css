@@ -725,8 +725,12 @@ body.debug-hotspots .answer-card:not(.selected-correct):not(.selected-wrong) {
 .trophy-text {
   top: 360px;
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 400;
   line-height: 1.2;
+}
+
+.trophy-text strong {
+  font-weight: 900;
 }
 
 .hotspots {

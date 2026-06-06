@@ -19,7 +19,7 @@ const els = {
 
 const DEFAULT_NEXT_BUTTON = {
   x: 38,
-  y: 90.1,
+  y: 90,
   width: 58,
   height: 7.6,
 };
@@ -47,11 +47,7 @@ function shouldShowHotspotDebug() {
     return false;
   }
 
-  return (
-    window.location.protocol === "file:" ||
-    window.location.hostname === "localhost" ||
-    window.location.hostname === "127.0.0.1"
-  );
+  return false;
 }
 
 function initialScreen() {
@@ -249,7 +245,10 @@ function renderStickerFullScreen() {
 }
 
 function renderTrophyScreen() {
-  const trophy = state.activeTrophy || {};
+  const trophy =
+    state.activeTrophy ||
+    trophyForCompletedQuestion(state.questionIndex + 1) ||
+    {};
   els.contentLayer.hidden = false;
   els.contentLayer.innerHTML = `
     <article class="trophy-page">

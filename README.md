@@ -107,6 +107,7 @@ O botao `Proxima pagina` usa `nextButton` com porcentagem da tela:
 - `height`: altura
 
 O proprio botao visual e clicavel, entao a area de clique acompanha o desenho.
+O padrao do botao e `y: 90`; configure `nextButton` apenas quando precisar mudar a posicao ou tamanho daquela tela.
 
 Nas respostas, o proprio `answerCard` e clicavel. Ajuste a posicao e tamanho em `answerCards`, e a area clicavel acompanha automaticamente.
 
@@ -132,8 +133,7 @@ Quando a pergunta indicada terminar, a tela de trofeu entra automaticamente depo
 
 ## Modo debug das areas clicaveis
 
-Ao abrir localmente, as areas clicaveis aparecem com borda vermelha.
-No GitHub Pages elas ficam invisiveis automaticamente.
+As areas clicaveis ficam invisiveis por padrao, inclusive localmente.
 
 Voce tambem pode forcar pela URL:
 
@@ -147,6 +147,7 @@ Para abrir uma pergunta especifica durante ajustes:
 - `?question=3&screen=wrong`
 - `?question=3&screen=correct`
 - `?question=3&screen=stickerFull`
+- `?question=3&screen=trophy`
 
 Troque o numero em `question` para abrir outra pergunta.
 
