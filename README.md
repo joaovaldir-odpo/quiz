@@ -93,6 +93,12 @@ Em telas de tema, `wrapAvoidStyle` reserva uma area invisivel dentro do texto pa
 wrapAvoidStyle: { width: 150, height: 145, marginLeft: 8 }
 ```
 
+Quando a imagem estiver do lado esquerdo, use:
+
+```js
+wrapAvoidStyle: { side: "left", width: 150, height: 145, marginRight: 8 }
+```
+
 O botao `Proxima pagina` usa `nextButton` com porcentagem da tela:
 
 - `x`: distancia da esquerda
@@ -136,11 +142,13 @@ Voce tambem pode forcar pela URL:
 
 Para abrir uma pergunta especifica durante ajustes:
 
-- `?question=2&screen=theme`
-- `?question=2&screen=question`
-- `?question=2&screen=wrong`
-- `?question=2&screen=correct`
-- `?question=2&screen=stickerFull`
+- `?question=3&screen=theme`
+- `?question=3&screen=question`
+- `?question=3&screen=wrong`
+- `?question=3&screen=correct`
+- `?question=3&screen=stickerFull`
+
+Troque o numero em `question` para abrir outra pergunta.
 
 ## Publicar no GitHub Pages
 

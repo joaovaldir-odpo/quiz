@@ -164,7 +164,7 @@ function renderTheme() {
     <article class="theme-page">
       <img class="theme-bg" src="${escapeAttribute(theme.background || "")}" alt="" />
       ${renderScreenHeader()}
-      ${theme.speech ? `<div class="theme-speech"${styleAttribute(theme.speechStyle)}>${formatText(theme.speech)}</div>` : ""}
+      ${theme.speech ? `<div class="theme-speech ${theme.speechClass || ""}"${styleAttribute(theme.speechStyle)}>${formatText(theme.speech)}</div>` : ""}
       ${renderImage("theme-character", theme.character, theme.characterStyle)}
       <section class="theme-copy ${theme.copyClass || ""}"${styleAttribute(theme.copyStyle)}>
         ${renderTextWrapSpacer(theme.wrapAvoidStyle)}
@@ -205,7 +205,7 @@ function renderWrongScreen() {
       <img class="wrong-bg" src="${escapeAttribute(wrongScreen.background || "")}" alt="" />
       ${renderScreenHeader("wrong-topbar")}
       ${renderImage("wrong-character", wrongScreen.character, wrongScreen.characterStyle)}
-      <div class="wrong-speech"${styleAttribute(wrongScreen.speechStyle)}>${formatText(wrongScreen.speech || "")}</div>
+      <div class="wrong-speech ${wrongScreen.speechClass || ""}"${styleAttribute(wrongScreen.speechStyle)}>${formatText(wrongScreen.speech || "")}</div>
       <div class="wrong-question"${styleAttribute(wrongScreen.questionStyle)}>${formatText(wrongScreen.question || current.question)}</div>
       <div class="wrong-answer"${styleAttribute(wrongScreen.answerStyle)}>
         <span aria-hidden="true">X</span>
@@ -284,7 +284,9 @@ function renderImage(className, src, style = {}) {
 
 function renderTextWrapSpacer(style = {}) {
   if (!Object.keys(style).length) return "";
-  return `<span class="text-wrap-spacer" aria-hidden="true"${styleAttribute(style)}></span>`;
+  const { side = "right", ...spacerStyle } = style;
+  const sideClass = side === "left" ? "is-left" : "is-right";
+  return `<span class="text-wrap-spacer ${sideClass}" aria-hidden="true"${styleAttribute(spacerStyle)}></span>`;
 }
 
 function renderNextButton(action, style = {}) {
@@ -315,6 +317,7 @@ function renderParagraphs(paragraphs = []) {
 
 function renderAnswerCards(question) {
   const cards = question.questionScreen?.answerCards || [];
+  const cardClass = question.questionScreen?.answerClass || "";
 
   return question.answers
     .map((answer, index) => {
@@ -324,7 +327,7 @@ function renderAnswerCards(question) {
       return `
         <button
           type="button"
-          class="answer-card"
+          class="answer-card ${cardClass}"
           data-answer-index="${index}"
           data-answer-correct="${answer.correct ? "true" : "false"}"
           aria-label="${escapeAttribute(answer.text || "")}"
