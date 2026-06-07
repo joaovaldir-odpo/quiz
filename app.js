@@ -32,6 +32,9 @@ const SCREEN_RENDERERS = {
   wrong: renderWrongScreen,
   correct: renderCorrectScreen,
   stickerFull: renderStickerFullScreen,
+  demo: renderDemoScreen,
+  demoSticker: renderDemoStickerScreen,
+  demoStickerFull: renderDemoStickerFullScreen,
   trophy: renderTrophyScreen,
 };
 
@@ -61,6 +64,9 @@ function initialScreen() {
     "wrong",
     "correct",
     "stickerFull",
+    "demo",
+    "demoSticker",
+    "demoStickerFull",
     "trophy",
   ];
 
@@ -239,7 +245,56 @@ function renderStickerFullScreen() {
     <article class="sticker-full-page">
       <img class="sticker-full-bg" src="${escapeAttribute(stickerFull.background || "")}" alt="" />
       ${renderImage("sticker-full-card", stickerFull.sticker, stickerFull.stickerStyle)}
-      ${renderNextButton("completeQuestion", stickerFull.nextButton)}
+      ${renderNextButton(current.demoScreen ? "demo" : "completeQuestion", stickerFull.nextButton)}
+    </article>
+  `;
+}
+
+function renderDemoScreen() {
+  const current = currentQuestion();
+  const demo = current.demoScreen || {};
+  els.contentLayer.hidden = false;
+  els.contentLayer.innerHTML = `
+    <article class="demo-page">
+      <img class="demo-bg" src="${escapeAttribute(demo.background || "")}" alt="" />
+      ${renderScreenHeader("demo-topbar")}
+      ${renderImage("demo-character", demo.character, demo.characterStyle)}
+      <div class="demo-note"${styleAttribute(demo.noteStyle)}>${formatText(demo.note || "")}</div>
+      <div class="demo-board"${styleAttribute(demo.boardStyle)}>${formatText(demo.board || "")}</div>
+      <div class="demo-copy"${styleAttribute(demo.copyStyle)}>${formatText(demo.copy || "")}</div>
+      ${renderOpenStickerButton("demoSticker", demo.openButton)}
+    </article>
+  `;
+}
+
+function renderDemoStickerScreen() {
+  const current = currentQuestion();
+  const demoSticker = current.demoStickerScreen || {};
+  els.contentLayer.hidden = false;
+  els.contentLayer.innerHTML = `
+    <article class="correct-page">
+      <img class="correct-bg" src="${escapeAttribute(demoSticker.background || "")}" alt="" />
+      <div class="correct-logos">
+        <div class="screen-logo screen-logo-left">LOGO<br />ESCOLA</div>
+        <div class="screen-logo screen-logo-right">LOGO<br />Consultoria</div>
+      </div>
+      ${renderImage("sticker-header", demoSticker.header, demoSticker.headerStyle)}
+      <div class="sticker-title"${styleAttribute(demoSticker.titleStyle)}>${formatText(demoSticker.title || "")}</div>
+      ${renderImage("sticker-card", demoSticker.sticker, demoSticker.stickerStyle)}
+      ${renderNextButton("demoStickerFull", demoSticker.nextButton)}
+    </article>
+  `;
+}
+
+function renderDemoStickerFullScreen() {
+  const current = currentQuestion();
+  const demoStickerFull = current.demoStickerFullScreen || {};
+  els.contentLayer.hidden = false;
+  els.contentLayer.innerHTML = `
+    <article class="sticker-full-page">
+      <img class="sticker-full-bg" src="${escapeAttribute(demoStickerFull.background || "")}" alt="" />
+      ${renderImage("sticker-full-card", demoStickerFull.sticker, demoStickerFull.stickerStyle)}
+      ${renderNextButton("completeQuestion", demoStickerFull.nextButton)}
     </article>
   `;
 }
@@ -306,6 +361,14 @@ function renderBackControl(style = {}) {
     <button type="button" class="back-control" data-nav-action="question"${styleAttribute(positionOnlyStyle(style))}>
       <span class="back-button-visual">Volte</span>
       <span class="back-arrow" aria-hidden="true"></span>
+    </button>
+  `;
+}
+
+function renderOpenStickerButton(action, style = {}) {
+  return `
+    <button type="button" class="open-sticker-button" data-nav-action="${escapeAttribute(action)}"${styleAttribute(style)}>
+      Abrir<br />figurinha
     </button>
   `;
 }

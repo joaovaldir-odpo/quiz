@@ -140,7 +140,9 @@ body {
 .question-bg,
 .question-character,
 .wrong-bg,
-.wrong-character {
+.wrong-character,
+.demo-bg,
+.demo-character {
   position: absolute;
   pointer-events: none;
   user-select: none;
@@ -149,7 +151,8 @@ body {
 
 .theme-bg,
 .question-bg,
-.wrong-bg {
+.wrong-bg,
+.demo-bg {
   inset: 0;
   width: 100%;
   height: 100%;
@@ -677,6 +680,106 @@ body.debug-hotspots .answer-card:not(.selected-correct):not(.selected-wrong) {
   object-fit: contain;
 }
 
+.demo-page {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  color: #111;
+  background: #eadfff;
+}
+
+.demo-topbar {
+  z-index: 5;
+}
+
+.demo-character {
+  top: 111px;
+  left: -9px;
+  width: 135px;
+  z-index: 3;
+}
+
+.demo-note {
+  position: absolute;
+  top: 76px;
+  left: 66px;
+  width: 128px;
+  z-index: 4;
+  padding: 9px 12px;
+  color: #111;
+  background: #c99108;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1.03;
+  text-align: center;
+  transform: rotate(-14deg);
+}
+
+.demo-note::after {
+  content: "";
+  position: absolute;
+  left: var(--note-tail-left, 18px);
+  bottom: var(--note-tail-bottom, -2px);
+  width: 21px;
+  height: 18px;
+  background: #c99108;
+  clip-path: polygon(0 0, 100% 0, 22% 100%);
+  transform: rotate(var(--note-tail-rotate, 45deg));
+  transform-origin: 50% 0;
+}
+
+.demo-board {
+  position: absolute;
+  top: 119px;
+  left: 112px;
+  width: 226px;
+  min-height: 96px;
+  z-index: 2;
+  padding: 16px 15px 12px;
+  color: #fff;
+  background: #111;
+  border: 7px solid #fff;
+  outline: 5px solid #111;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1.05;
+}
+
+.demo-copy {
+  position: absolute;
+  top: 282px;
+  left: 111px;
+  width: 223px;
+  z-index: 2;
+  padding: 10px 12px;
+  color: #fff;
+  background: #2118bb;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 1.08;
+}
+
+.open-sticker-button {
+  position: absolute;
+  top: 414px;
+  left: 204px;
+  width: 110px;
+  min-height: 66px;
+  z-index: 8;
+  padding: 6px 7px;
+  color: #c89408;
+  background: #fff;
+  border: 4px solid #2118bb;
+  font-family: inherit;
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1;
+  text-align: center;
+  cursor: pointer;
+}
+
 .trophy-page {
   position: relative;
   height: 100%;
@@ -741,7 +844,8 @@ body.debug-hotspots .answer-card:not(.selected-correct):not(.selected-wrong) {
 }
 
 .next-page-button:focus-visible,
-.back-control:focus-visible {
+.back-control:focus-visible,
+.open-sticker-button:focus-visible {
   outline: 3px solid #fff;
   outline-offset: 3px;
 }
@@ -802,12 +906,14 @@ body.debug-hotspots .answer-card:not(.selected-correct):not(.selected-wrong) {
 
 .answer-card:not(:disabled):hover,
 .next-page-button:hover span,
-.back-control:hover .back-button-visual {
+.back-control:hover .back-button-visual,
+.open-sticker-button:hover {
   filter: brightness(1.08);
 }
 
 body.debug-hotspots .next-page-button,
-body.debug-hotspots .back-control {
+body.debug-hotspots .back-control,
+body.debug-hotspots .open-sticker-button {
   outline: 2px solid #ff1e1e;
   outline-offset: 3px;
 }

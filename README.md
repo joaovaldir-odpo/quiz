@@ -51,6 +51,9 @@ Telas de cada pergunta:
 - `wrongScreen`: resposta errada daquela pergunta
 - `correctScreen`: recompensa daquela pergunta
 - `stickerFullScreen`: figurinha em tela cheia
+- `demoScreen`: tela extra de demonstracao depois da figurinha
+- `demoStickerScreen`: figurinha extra aberta pela demonstracao
+- `demoStickerFullScreen`: figurinha extra em tela cheia
 
 Exemplo:
 
@@ -147,6 +150,9 @@ Para abrir uma pergunta especifica durante ajustes:
 - `?question=3&screen=wrong`
 - `?question=3&screen=correct`
 - `?question=3&screen=stickerFull`
+- `?question=4&screen=demo`
+- `?question=4&screen=demoSticker`
+- `?question=4&screen=demoStickerFull`
 - `?question=3&screen=trophy`
 
 Troque o numero em `question` para abrir outra pergunta.
